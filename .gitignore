@@ -1,8 +1,18 @@
+# Variables d'environnement sensibles
+.env
+
+# Base de données
+*.db
+tasks.db
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
-*.db
-.env
+
+# IDE
 .vscode/
 .idea/
 
+# Logs
+*.log
