@@ -14,12 +14,16 @@ from app.app import create_app, JSONFormatter
 def client():
     """Fixture pour créer un client de test avec base de données temporaire"""
     db_fd, test_db = tempfile.mkstemp()
+    
+    # Configuration d'environnement pour les tests
     os.environ['DATABASE_PATH'] = test_db
     os.environ['FLASK_ENV'] = 'testing'
-
+    os.environ['SECRET_KEY'] = 'test-secret-key'
+    
     app = create_app('testing')
     app.config['TESTING'] = True
-
+    app.config['DATABASE_PATH'] = test_db
+    
     with app.test_client() as client:
         with app.app_context():
             # Initialiser la base de données de test
@@ -30,9 +34,15 @@ def client():
                              completed BOOLEAN DEFAULT FALSE)''')
             conn.close()
         yield client
-
+    
+    # Nettoyage
     os.close(db_fd)
     os.unlink(test_db)
+    
+    # Nettoyer les variables d'environnement
+    for key in ['DATABASE_PATH', 'FLASK_ENV', 'SECRET_KEY']:
+        if key in os.environ:
+            del os.environ[key]
 
 
 class TestHealthEndpoint:
