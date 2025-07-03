@@ -71,9 +71,7 @@ jobs:
       
       - name: Lister les fichiers pour debug
         run: |
-          pwd
-          ls -l
-          ls -l infrastructure || true
+          ls -l ansible
 
       - name: Run Ansible Playbook
         run: |
