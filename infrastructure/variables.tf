@@ -19,7 +19,7 @@ variable "vm_size" {
 }
 
 variable "ssh_public_key_path" {
-  type    = string
-  default = "~/.ssh/id_rsa.pub"
+  default = "/home/azureuser/.ssh/id_rsa.pub"
 }
+
 
