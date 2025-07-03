@@ -1,0 +1,65 @@
+name: Deploy Infra & App (Terraform + Ansible)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    name: Provision Azure VM with Terraform
+    runs-on: ubuntu-latest
+    outputs:
+      vm_ip: ${{ steps.tf_output.outputs.vm_ip }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Terraform Init
+        run: terraform -chdir=infrastructure init
+
+      - name: Terraform Apply
+        run: terraform -chdir=infrastructure apply -auto-approve
+
+      - name: Get VM Public IP
+        id: tf_output
+        run: |
+          echo "vm_ip=$(terraform -chdir=infrastructure output -raw public_ip)" >> $GITHUB_OUTPUT
+
+  ansible:
+    name: Configure VM & Deploy App with Ansible
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: Create inventory file
+        run: |
+          echo "[vm]" > hosts.ini
+          echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=${{ secrets.ANSIBLE_USER }} ansible_ssh_private_key_file=private_key.pem ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
+
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i hosts.ini ansible/playbook.yml
