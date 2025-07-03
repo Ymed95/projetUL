@@ -11,6 +11,7 @@ try:
 except ImportError:
     from config import config
 
+
 class JSONFormatter(logging.Formatter):
     def format(self, record):
         log_entry = {
