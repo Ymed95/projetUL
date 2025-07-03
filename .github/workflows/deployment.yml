@@ -51,31 +51,31 @@ jobs:
           echo "vm_ip=$(terraform -chdir=infrastructure output -raw public_ip)" >> $GITHUB_OUTPUT
 
   ansible:
-    name: Configure VM & Deploy App with Ansible
-    needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+   name: Configure VM & Deploy App with Ansible
+   needs: terraform
+   runs-on: ubuntu-latest
+   steps:
+      - uses: actions/checkout@v4
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install Ansible
         run: |
           sudo apt-get update
           sudo apt-get install -y ansible
 
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-
       - name: Create inventory file
         run: |
           echo '[filrouge]' > hosts.ini
-          echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=${{ secrets.ANSIBLE_USER }} ansible_ssh_private_key_file=private_key.pem ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
+          echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=${{ secrets.ANSIBLE_USER }} ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
 
       - name: Afficher hosts.ini
         run: cat hosts.ini
 
       - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           ansible-playbook -i hosts.ini infrastructure/ansible/playbook.yml
