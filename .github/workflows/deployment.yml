@@ -9,7 +9,7 @@ permissions:
   id-token: write
   contents: read
 
-#jobs:
+jobs:
   terraform:
     name: Provision Azure VM with Terraform
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ permissions:
 
   ansible:
     name: Configure VM & Deploy App with Ansible
-    needs: terraform
+    #needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
