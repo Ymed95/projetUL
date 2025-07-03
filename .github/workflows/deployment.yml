@@ -73,8 +73,8 @@ jobs:
         run: |
           pwd
           ls -l
-          ls -l ansible || true
+          ls -l infrastructure || true
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i /infrastructure/ansible/hosts.ini /infrastructure/ansible/playbook.yml
+          ansible-playbook -i hosts.ini /infrastructure/ansible/playbook.yml
