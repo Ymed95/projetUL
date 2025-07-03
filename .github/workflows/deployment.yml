@@ -48,7 +48,7 @@ jobs:
 
   ansible:
     name: Configure VM & Deploy App with Ansible
-    #needs: terraform
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
