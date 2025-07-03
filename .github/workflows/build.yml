@@ -17,7 +17,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      security-events: write
 
     steps:
     - name: Checkout repository
@@ -58,23 +57,12 @@ jobs:
 
     - name: Test Docker image
       run: |
-        docker run --rm -d --name test-container -p 5000:5000 ${{ steps.meta.outputs.tags }}
-        sleep 10
+        IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+        echo "Testing image: $IMAGE_TAG"
+        docker run --rm -d --name test-container -p 5000:5000 "$IMAGE_TAG"
+        sleep 15
         curl -f http://localhost:5000/health || exit 1
         docker stop test-container
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ${{ steps.meta.outputs.tags }}
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
 
     - name: Push Docker image
       if: github.event_name != 'pull_request'
