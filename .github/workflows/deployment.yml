@@ -41,6 +41,10 @@ jobs:
       - name: Terraform Apply
         run: terraform -chdir=infrastructure apply -auto-approve
 
+      # Ajout : Refresh-only pour forcer la récupération de l'IP publique propagée
+      - name: Terraform Refresh State
+        run: terraform -chdir=infrastructure apply -refresh-only -auto-approve
+
       - name: Get VM Public IP
         id: tf_output
         run: |
