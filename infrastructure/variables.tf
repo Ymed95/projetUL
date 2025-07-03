@@ -19,7 +19,8 @@ variable "vm_size" {
 }
 
 variable "ssh_public_key_path" {
-  default = "/home/azureuser/.ssh/id_rsa.pub"
+  description = "Chemin vers la clé publique SSH"
+  default     = "/home/runner/.ssh/id_rsa.pub"
 }
 
 
