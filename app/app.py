@@ -5,8 +5,11 @@ import os
 import logging
 import json
 from datetime import datetime
-from config import config
 
+try:
+    from .config import config
+except ImportError:
+    from config import config
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
