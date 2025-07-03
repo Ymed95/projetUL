@@ -29,6 +29,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Write SSH public key
+        run: |
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > /home/runner/.ssh/id_rsa.pub
+          chmod 644 /home/runner/.ssh/id_rsa.pub
 
       - name: Terraform Init
         run: terraform -chdir=infrastructure init
