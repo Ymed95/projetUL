@@ -77,4 +77,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ../hosts.ini playbook.yml
+          ansible-playbook -i /infrastructure/ansible/hosts.ini /infrastructure/ansible/playbook.yml
