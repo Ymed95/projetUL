@@ -69,10 +69,8 @@ jobs:
           echo "[vm]" > hosts.ini
           echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=${{ secrets.ANSIBLE_USER }} ansible_ssh_private_key_file=private_key.pem ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
       
-      - name: Lister les fichiers pour debug
-        run: |
-          ls -l ansible
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i hosts.ini ansible/playbook.yml
+          ansible-playbook -i hosts.ini infrastructure/ansible/playbook.yml
+
