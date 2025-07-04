@@ -232,7 +232,8 @@ Accès réseau : Vérification/ouverture des ports NSG et firewall local.
 
 Tests/Qualité : Blocage du déploiement si les tests ou le lint Python échouent.
 
-📑 Conclusion
+📑 Conclusion:
+
 Ce projet illustre la mise en place professionnelle d’une chaîne DevOps complète :
 
 Infra as Code (Terraform)
