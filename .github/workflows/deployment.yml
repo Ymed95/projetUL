@@ -69,7 +69,7 @@ jobs:
       - name: Create inventory file
         run: |
           echo '[filrouge]' > hosts.ini
-          echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=${{ secrets.ANSIBLE_USER }} ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
+          echo "${{ needs.terraform.outputs.vm_ip }} ansible_user=azureuser ansible_python_interpreter=/usr/bin/python3" >> hosts.ini
 
       - name: Afficher hosts.ini
         run: cat hosts.ini
