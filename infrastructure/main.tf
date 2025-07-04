@@ -116,6 +116,19 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+  security_rule {
+    name                       = "Allow-Node-Exporter"
+    priority                   = 700
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "9100"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+
 # Association du NSG à la carte réseau
 resource "azurerm_network_interface_security_group_association" "nic_nsg" {
   network_interface_id      = azurerm_network_interface.nic.id
