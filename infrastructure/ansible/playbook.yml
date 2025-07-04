@@ -30,7 +30,7 @@
       copy:
         src: ../../.env
         dest: "{{ app_dir }}/.env"
-        mode: '0600'
+        mode: '0644'
     
 
     - name: Créer le dossier data s'il n'existe pas
